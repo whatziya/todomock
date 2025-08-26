@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:todomock/presentation/widgets/greeting_widget.dart';
-import 'package:todomock/presentation/widgets/progress_widget.dart';
-import 'package:todomock/presentation/widgets/todo_tile.dart';
+import 'package:todomock/presentation/features/add_todo/add_todo.dart';
+import 'package:todomock/presentation/widgets/home/greeting_widget.dart';
+import 'package:todomock/presentation/widgets/home/progress_widget.dart';
+import 'package:todomock/presentation/widgets/home/todo_tile.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   static const List<Map<String, dynamic>> _sampleTodos = [
@@ -33,13 +34,21 @@ class HomeScreen extends StatelessWidget {
     },
   ];
 
-  void _onAddTodoTap() {
-    debugPrint('Add todo tapped');
-  }
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  void _onAddTodoTap() => showModalBottomSheet<void>(
+    context: context,
+    builder: (BuildContext context) => const AddTodo(),
+    isScrollControlled: true,
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       body: SafeArea(
         child: SizedBox(
           child: Padding(
@@ -65,11 +74,12 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 10),
                 Expanded(
                   child: ListView.separated(
-                    itemCount: _sampleTodos.length,
+                    itemCount: HomeScreen._sampleTodos.length,
                     separatorBuilder: (context, index) =>
                         const SizedBox(height: 10),
                     itemBuilder: (context, index) {
-                      final todo = _sampleTodos[index % _sampleTodos.length];
+                      final todo = HomeScreen
+                          ._sampleTodos[index % HomeScreen._sampleTodos.length];
                       return TodoTile(
                         title: todo['title'] as String,
                         subtitle: todo['subtitle'] as String,
