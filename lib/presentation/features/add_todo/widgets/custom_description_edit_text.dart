@@ -3,18 +3,12 @@ import 'package:flutter/material.dart';
 class CustomDescriptionEditText extends StatelessWidget {
   const CustomDescriptionEditText({
     required this.hint,
+    required this.controller,
     super.key,
-    this.errorMessage,
   });
 
-  final String? errorMessage;
   final String hint;
-
-  static const _errorStyle = TextStyle(
-    color: Colors.red,
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-  );
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +28,7 @@ class CustomDescriptionEditText extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
           ),
           child: TextField(
+            controller: controller,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             style: const TextStyle(
@@ -58,10 +53,6 @@ class CustomDescriptionEditText extends StatelessWidget {
             ),
           ),
         ),
-        if (errorMessage != null) ...[
-          const SizedBox(height: 8),
-          Text(errorMessage!, style: _errorStyle),
-        ],
       ],
     );
   }

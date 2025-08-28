@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:todomock/common/utils/calendar_info.dart';
-import 'package:todomock/presentation/widgets/time_calendar/calendar_item_container.dart';
+import 'package:todomock/presentation/features/add_todo/widgets/time_calendar/calendar_item_container.dart';
 
 class CalendarWidget extends StatefulWidget {
-  const CalendarWidget({super.key});
+  const CalendarWidget({
+    required this.year,
+    required this.month,
+    required this.selectedDay,
+    required this.onNextDateFrame,
+    required this.onPreviousDateFrame,
+    required this.onDayTap,
+    super.key,
+  });
+
+  final int year;
+  final int month;
+  final int selectedDay;
+  final VoidCallback onNextDateFrame;
+  final VoidCallback onPreviousDateFrame;
+  final void Function(int day) onDayTap;
 
   @override
   State<CalendarWidget> createState() => _CalendarWidgetState();
@@ -11,53 +26,39 @@ class CalendarWidget extends StatefulWidget {
 
 class _CalendarWidgetState extends State<CalendarWidget> {
   late List<int> calendarInfo;
-  late int year;
-  late int month;
-  late int today;
-  int? selectedDay;
 
   static const List<String> monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   @override
   void initState() {
     super.initState();
-    final now = DateTime.now();
-    year = now.year;
-    month = now.month;
-    today = now.day;
-    selectedDay = today;
     _updateCalendar();
   }
 
+  @override
+  void didUpdateWidget(CalendarWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update calendar when year or month changes from parent
+    if (widget.year != oldWidget.year || widget.month != oldWidget.month) {
+      _updateCalendar();
+    }
+  }
+
   void _updateCalendar() {
-    calendarInfo = CalendarInfoUtils.calendarInfo(year, month);
-  }
-
-  void _nextDateFrame() {
-    setState(() {
-      if (month == 12) {
-        year++;
-        month = 1;
-      } else {
-        month++;
-      }
-      _updateCalendar();
-    });
-  }
-
-  void _previousDateFrame() {
-    setState(() {
-      if (month == 1) {
-        year--;
-        month = 12;
-      } else {
-        month--;
-      }
-      _updateCalendar();
-    });
+    calendarInfo = CalendarInfoUtils.calendarInfo(widget.year, widget.month);
   }
 
   @override
@@ -83,13 +84,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             child: Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.keyboard_arrow_left,
-                      color: Colors.black, size: 32),
-                  onPressed: _previousDateFrame,
+                  icon: const Icon(
+                    Icons.keyboard_arrow_left,
+                    color: Colors.black,
+                    size: 32,
+                  ),
+                  onPressed: widget.onPreviousDateFrame,
                 ),
                 const Spacer(),
                 Text(
-                  '${monthNames[month - 1]} $year',
+                  '${monthNames[widget.month - 1]} ${widget.year}',
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 16,
@@ -98,9 +102,12 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.keyboard_arrow_right,
-                      color: Colors.black, size: 32),
-                  onPressed: _nextDateFrame,
+                  icon: const Icon(
+                    Icons.keyboard_arrow_right,
+                    color: Colors.black,
+                    size: 32,
+                  ),
+                  onPressed: widget.onNextDateFrame,
                 ),
               ],
             ),
@@ -139,15 +146,21 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             itemCount: calendarInfo.length,
             itemBuilder: (context, index) {
               final day = calendarInfo[index];
+              final now = DateTime.now();
+              final today = DateTime(now.year, now.month, now.day);
+              final dateForDay = DateTime(widget.year, widget.month, day);
+              final isPastDate = day != 0 && dateForDay.isBefore(today);
+              final isToday = day != 0 && dateForDay.isAtSameMomentAs(today);
+
               return CalendarItemContainer(
                 mainString: day == 0 ? ' ' : day.toString(),
-                isChecked: day != 0 && day == selectedDay,
-                onTap: day == 0
+                isChecked: day != 0 && day == widget.selectedDay,
+                isToday: isToday,
+                isPastDate: isPastDate,
+                onTap: (day == 0 || isPastDate)
                     ? null
                     : () {
-                  setState(() {
-                    selectedDay = day;
-                  });
+                  widget.onDayTap(day);
                 },
               );
             },
