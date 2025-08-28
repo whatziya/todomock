@@ -10,11 +10,9 @@ class TimeWidget extends StatefulWidget {
     required this.controller,
     required this.timeWidgetType,
     super.key,
-    this.errorMessage,
   });
 
   final TextEditingController controller;
-  final String? errorMessage;
   final TimeWidgetType timeWidgetType;
 
   @override
@@ -22,12 +20,6 @@ class TimeWidget extends StatefulWidget {
 }
 
 class _TimeWidgetState extends State<TimeWidget> {
-  static const _errorStyle = TextStyle(
-    color: Colors.red,
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-  );
-
   int get _maxValue => widget.timeWidgetType == TimeWidgetType.hour ? 23 : 59;
 
   @override
@@ -133,11 +125,7 @@ class _TimeWidgetState extends State<TimeWidget> {
               const SizedBox(width: 16),
             ],
           ),
-        ),
-        if (widget.errorMessage != null) ...[
-          const SizedBox(height: 8),
-          Text(widget.errorMessage!, style: _errorStyle),
-        ],
+        )
       ],
     );
   }

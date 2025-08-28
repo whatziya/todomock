@@ -3,18 +3,13 @@ import 'package:flutter/material.dart';
 class CustomTitleEditText extends StatelessWidget {
   const CustomTitleEditText({
     required this.hint,
+    required this.controller,
     super.key,
-    this.errorMessage,
   });
 
-  final String? errorMessage;
   final String hint;
+  final TextEditingController controller;
 
-  static const _errorStyle = TextStyle(
-    color: Colors.red,
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +30,7 @@ class CustomTitleEditText extends StatelessWidget {
           ),
           child: Center(
             child: TextField(
+              controller: controller,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
@@ -57,10 +53,6 @@ class CustomTitleEditText extends StatelessWidget {
             ),
           ),
         ),
-        if (errorMessage != null) ...[
-          const SizedBox(height: 8),
-          Text(errorMessage!, style: _errorStyle),
-        ],
       ],
     );
   }

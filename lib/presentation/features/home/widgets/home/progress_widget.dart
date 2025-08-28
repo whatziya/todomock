@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todomock/presentation/widgets/home/progress_card.dart';
+import 'package:todomock/presentation/features/home/widgets/home/progress_card.dart';
 
 class ProgressWidget extends StatelessWidget {
   const ProgressWidget({
@@ -45,7 +45,6 @@ class ProgressWidget extends StatelessWidget {
       'count': canceled,
     },
   ];
-
 
   @override
   Widget build(BuildContext context) {

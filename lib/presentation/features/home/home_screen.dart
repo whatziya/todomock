@@ -1,38 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todomock/presentation/features/add_todo/add_todo.dart';
-import 'package:todomock/presentation/widgets/home/greeting_widget.dart';
-import 'package:todomock/presentation/widgets/home/progress_widget.dart';
-import 'package:todomock/presentation/widgets/home/todo_tile.dart';
+import 'package:todomock/presentation/features/home/bloc/home_cubit.dart';
+import 'package:todomock/presentation/features/home/bloc/home_state.dart';
+import 'package:todomock/presentation/features/home/widgets/home/greeting_widget.dart';
+import 'package:todomock/presentation/features/home/widgets/home/progress_widget.dart';
+import 'package:todomock/presentation/features/home/widgets/home/todo_tile.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
-  static const List<Map<String, dynamic>> _sampleTodos = [
-    {
-      'title': 'Dashboard for ProSavvy',
-      'subtitle': 'Digital Product Design',
-      'tasks': 12,
-      'progress': 0.75,
-    },
-    {
-      'title': 'Mobile App UI',
-      'subtitle': 'iOS Development',
-      'tasks': 8,
-      'progress': 0.45,
-    },
-    {
-      'title': 'Website Redesign',
-      'subtitle': 'Web Development',
-      'tasks': 15,
-      'progress': 0.90,
-    },
-    {
-      'title': 'Brand Identity',
-      'subtitle': 'Graphic Design',
-      'tasks': 6,
-      'progress': 0.30,
-    },
-  ];
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -47,10 +23,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: SafeArea(
-        child: SizedBox(
+    return BlocProvider<HomeCubit>(
+      create: (context) => HomeCubit()..loadScreen(),
+      child: Scaffold(
+        backgroundColor: Colors.grey[200],
+        body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -72,20 +49,46 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 16),
                 AddTodoTile(onTap: _onAddTodoTap),
                 const SizedBox(height: 10),
+
                 Expanded(
-                  child: ListView.separated(
-                    itemCount: HomeScreen._sampleTodos.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      final todo = HomeScreen
-                          ._sampleTodos[index % HomeScreen._sampleTodos.length];
-                      return TodoTile(
-                        title: todo['title'] as String,
-                        subtitle: todo['subtitle'] as String,
-                        tasks: todo['tasks'] as int,
-                        progress: todo['progress'] as double,
-                      );
+                  child: BlocBuilder<HomeCubit, HomeState>(
+                    builder: (context, state) {
+                      if (state is HomeLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (state is HomeSuccess) {
+                        final todos = state.items;
+                        if (todos.isEmpty) {
+                          return const Center(
+                            child: Text(
+                              'No tasks yet',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          );
+                        }
+                        return ListView.separated(
+                          itemCount: todos.length,
+                          separatorBuilder: (context, index) =>
+                          const SizedBox(height: 10),
+                          itemBuilder: (context, index) {
+                            final todo = todos[index];
+                            return TodoTile(
+                              title: todo.title,
+                              subtitle: todo.description,
+                              tasks: todo.taskCount ?? 0,
+                              progress: (todo.progress ?? 0) / 100,
+                            );
+                          },
+                        );
+                      } else {
+                        return const Center(
+                          child: Text(
+                            'Failed to load tasks',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        );
+                      }
                     },
                   ),
                 ),
