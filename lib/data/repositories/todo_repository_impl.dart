@@ -1,12 +1,13 @@
 import 'package:drift/drift.dart';
 import 'package:todomock/data/data_source/local/drift_api/app_database.dart';
 import 'package:todomock/data/data_source/local/drift_api/daos/todo_dao.dart';
+import 'package:todomock/domain/entities/to_do_item.dart';
 import 'package:todomock/domain/repositories/todo_repository.dart';
 
 class TodoRepositoryImpl implements TodoRepository {
-  TodoRepositoryImpl(this.dao);
+  final TodoDao _dao;
 
-  final TodoDao dao;
+  const TodoRepositoryImpl(this._dao);
 
   @override
   Future<int> addToDoItem({
@@ -31,20 +32,15 @@ class TodoRepositoryImpl implements TodoRepository {
       createdAt: Value(DateTime.now()),
     );
 
-    return dao.addToDoItem(entry);
+    return _dao.addToDoItem(entry);
   }
 
   @override
-  Future<int> deleteToDoItem(int id) => dao.deleteToDoItem(id);
+  Future<int> deleteToDoItem(int id) => _dao.deleteToDoItem(id);
 
   @override
-  Future<List<TodoItem>> getAllToDoItems() async {
-    final rows = await dao.getAllToDoItems();
-    return rows;
-  }
+  Future<List<ToDoItem>> getAllToDoItems() => _dao.getAllToDoItems();
 
   @override
-  Stream<List<TodoItem>> watchAllToDoItems() {
-    return dao.watchAllToDoItems();
-  }
+  Stream<List<ToDoItem>> watchAllToDoItems() => _dao.watchAllToDoItems();
 }

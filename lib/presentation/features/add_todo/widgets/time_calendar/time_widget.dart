@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
 
-enum TimeWidgetType {
-  hour,
-  minute,
-}
+enum TimeWidgetType { hour, minute }
 
 class TimeWidget extends StatefulWidget {
-  const TimeWidget({
-    required this.controller,
-    required this.timeWidgetType,
-    super.key,
-  });
-
   final TextEditingController controller;
   final TimeWidgetType timeWidgetType;
+
+  const TimeWidget({required this.controller, required this.timeWidgetType, super.key});
 
   @override
   State<TimeWidget> createState() => _TimeWidgetState();
@@ -34,99 +27,95 @@ class _TimeWidgetState extends State<TimeWidget> {
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 60,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(14)),
+        border: Border(
+          left: BorderSide(),
+          top: BorderSide(),
+          right: BorderSide(),
+          bottom: BorderSide(width: 5),
+        ),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 70,
+            child: TextField(
+              controller: widget.controller,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: Colors.black,
+              ),
+              cursorColor: Colors.black,
+              cursorHeight: 18,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(horizontal: 20),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+          ),
+          const Spacer(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                onTap: _incrementTime,
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child: const Icon(Icons.arrow_drop_up),
+              ),
+              InkWell(
+                onTap: _decrementTime,
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child: const Icon(Icons.arrow_drop_down),
+              ),
+            ],
+          ),
+          const SizedBox(width: 16),
+        ],
+      ),
+    );
+  }
+
   void _validateInput() {
     final text = widget.controller.text;
     if (text.isEmpty) return;
 
     final parsed = int.tryParse(text);
     if (parsed == null) {
-      widget.controller.text = '00';
-      widget.controller.selection = const TextSelection.collapsed(offset: 2);
+      _setFormattedValue(0);
       return;
     }
 
-    final value = parsed.clamp(0, _maxValue);
-    final formatted = value.toString().padLeft(2, '0');
+    final clampedValue = parsed.clamp(0, _maxValue);
+    final formatted = clampedValue.toString().padLeft(2, '0');
 
     if (text != formatted) {
-      widget.controller.text = formatted;
-      widget.controller.selection = const TextSelection.collapsed(offset: 2);
+      _setFormattedValue(clampedValue);
     }
   }
 
-  void _increaseTime() {
-    var value = int.tryParse(widget.controller.text) ?? 0;
-    value = (value + 1) > _maxValue ? 0 : value + 1;
-    widget.controller.text = value.toString().padLeft(2, '0');
+  void _incrementTime() {
+    final currentValue = int.tryParse(widget.controller.text) ?? 0;
+    final newValue = (currentValue + 1) > _maxValue ? 0 : currentValue + 1;
+    _setFormattedValue(newValue);
   }
 
-  void _decreaseTime() {
-    var value = int.tryParse(widget.controller.text) ?? 0;
-    value = (value - 1) < 0 ? _maxValue : value - 1;
-    widget.controller.text = value.toString().padLeft(2, '0');
+  void _decrementTime() {
+    final currentValue = int.tryParse(widget.controller.text) ?? 0;
+    final newValue = (currentValue - 1) < 0 ? _maxValue : currentValue - 1;
+    _setFormattedValue(newValue);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          height: 60,
-          decoration:
-              BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(),
-              ).copyWith(
-                border: const Border(
-                  left: BorderSide(),
-                  top: BorderSide(),
-                  right: BorderSide(),
-                  bottom: BorderSide(width: 5),
-                ),
-              ),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 70,
-                child: TextField(
-                  controller: widget.controller,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black,
-                  ),
-                  cursorColor: Colors.black,
-                  cursorHeight: 18,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-              const Spacer(),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: _increaseTime,
-                    borderRadius: BorderRadius.circular(20),
-                    child: const Icon(Icons.arrow_drop_up),
-                  ),
-                  InkWell(
-                    onTap: _decreaseTime,
-                    borderRadius: BorderRadius.circular(20),
-                    child: const Icon(Icons.arrow_drop_down),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 16),
-            ],
-          ),
-        )
-      ],
-    );
+  void _setFormattedValue(int value) {
+    final formatted = value.toString().padLeft(2, '0');
+    widget.controller.text = formatted;
+    widget.controller.selection = TextSelection.collapsed(offset: formatted.length);
   }
 }

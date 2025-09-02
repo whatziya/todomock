@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:todomock/presentation/features/home/widgets/home/progress_card.dart';
 
 class ProgressWidget extends StatelessWidget {
+  final int ongoing;
+  final int inProcess;
+  final int completed;
+  final int canceled;
+
   const ProgressWidget({
     required this.ongoing,
     required this.inProcess,
@@ -9,11 +14,6 @@ class ProgressWidget extends StatelessWidget {
     required this.canceled,
     super.key,
   });
-
-  final int ongoing;
-  final int inProcess;
-  final int completed;
-  final int canceled;
 
   List<Map<String, dynamic>> get _cardConfigs => [
     {
