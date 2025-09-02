@@ -1,4 +1,5 @@
-import 'package:todomock/data/data_source/local/drift_api/app_database.dart';
+
+import 'package:todomock/domain/entities/to_do_item.dart';
 
 abstract interface class TodoRepository {
   Future<int> addToDoItem({
@@ -14,7 +15,7 @@ abstract interface class TodoRepository {
 
   Future<int> deleteToDoItem(int id);
 
-  Future<List<TodoItem>> getAllToDoItems();
+  Future<List<ToDoItem>> getAllToDoItems();
 
-  Stream<List<TodoItem>> watchAllToDoItems();
+  Stream<List<ToDoItem>> watchAllToDoItems();
 }

@@ -6,11 +6,16 @@ import 'package:todomock/domain/repositories/todo_repository.dart';
 
 final GetIt sl = GetIt.instance;
 
-Future<void> initDependencies() async {
+void initDependencies() {
+  // Database layer
   sl
     ..registerLazySingleton<AppDatabase>(AppDatabase.new)
-    ..registerLazySingleton<TodoDao>(() => TodoDao(sl<AppDatabase>()))
-    ..registerLazySingleton<TodoRepository>(
-      () => TodoRepositoryImpl(sl<TodoDao>()),
-    );
+
+  // Data layer
+  ..registerLazySingleton<TodoDao>(() => TodoDao(sl<AppDatabase>()))
+
+  // Domain layer
+  ..registerLazySingleton<TodoRepository>(
+        () => TodoRepositoryImpl(sl<TodoDao>()),
+  );
 }

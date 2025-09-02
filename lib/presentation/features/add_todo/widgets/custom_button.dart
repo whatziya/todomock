@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
+  final VoidCallback? onTap;
+  final Color randomColor;
+  final bool isLoading;
+
   const CustomButton({
     required this.onTap,
     required this.randomColor,
     this.isLoading = false,
     super.key,
   });
-
-  final VoidCallback? onTap;
-  final Color randomColor;
-  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +21,10 @@ class CustomButton extends StatelessWidget {
       height: 60,
       child: Material(
         color: isDisabled ? randomColor.withValues(alpha: 0.6) : randomColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: const BorderRadius.all(Radius.circular(14)),
         child: InkWell(
           onTap: isDisabled ? null : onTap,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: const BorderRadius.all(Radius.circular(14)),
           child: Center(
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),

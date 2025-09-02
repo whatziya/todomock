@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:todomock/common/utils/random_color.dart';
 
 class TodoTile extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final int tasks;
+  final double progress;
+  final VoidCallback? onTap;
+
   const TodoTile({
     required this.title,
     required this.subtitle,
@@ -11,37 +17,27 @@ class TodoTile extends StatelessWidget {
     this.onTap,
   });
 
-  final String title;
-  final String subtitle;
-  final int tasks;
-  final double progress;
-  final VoidCallback? onTap;
-
-  BoxDecoration get _decoration => const BoxDecoration(
-    color: Colors.white,
-    border: Border(
-      left: BorderSide(),
-      top: BorderSide(),
-      right: BorderSide(),
-      bottom: BorderSide(
-        width: 5,
-      ),
-    ),
-    borderRadius: BorderRadius.all(Radius.circular(14)),
-  );
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         height: 95,
-        decoration: _decoration,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            left: BorderSide(),
+            top: BorderSide(),
+            right: BorderSide(),
+            bottom: BorderSide(width: 5),
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+        ),
         child: Padding(
           padding: const EdgeInsets.only(left: 16, right: 24),
           child: Row(
+            spacing: 2,
             children: [
-              /// Wrap texts in Expanded to prevent overflow
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,10 +45,7 @@ class TodoTile extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -62,18 +55,14 @@ class TodoTile extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
                     Row(
+                      spacing: 4,
                       children: [
                         const Icon(Icons.check_circle_outline, size: 18),
-                        const SizedBox(width: 4),
                         Flexible(
                           child: Text(
                             '$tasks Tasks',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -111,22 +100,9 @@ class TodoTile extends StatelessWidget {
 }
 
 class AddTodoTile extends StatelessWidget {
-  const AddTodoTile({required this.onTap, super.key});
-
   final VoidCallback onTap;
 
-  BoxDecoration get _decoration => const BoxDecoration(
-    color: Colors.white,
-    border: Border(
-      left: BorderSide(),
-      top: BorderSide(),
-      right: BorderSide(),
-      bottom: BorderSide(
-        width: 5,
-      ),
-    ),
-    borderRadius: BorderRadius.all(Radius.circular(14)),
-  );
+  const AddTodoTile({required this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -135,15 +111,21 @@ class AddTodoTile extends StatelessWidget {
       child: Container(
         width: double.infinity,
         height: 95,
-        decoration: _decoration,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            left: BorderSide(),
+            top: BorderSide(),
+            right: BorderSide(),
+            bottom: BorderSide(width: 5),
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+        ),
         child: const Padding(
           padding: EdgeInsets.only(left: 16, right: 24),
           child: Row(
             children: [
-              Text(
-                'Add new project',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+              Text('Add new project', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Spacer(),
               Stack(
                 alignment: Alignment.center,

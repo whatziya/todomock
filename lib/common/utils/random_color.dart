@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-class RandomColorUtils {
+abstract final class RandomColorUtils {
   static final Random _random = Random();
 
   static Color randomBrightColor() {
@@ -12,8 +12,8 @@ class RandomColorUtils {
         _random.nextInt(256),
         _random.nextInt(256),
       );
-
-      if (color.computeLuminance() > 0.2  && color.computeLuminance() < 0.8) {
+      final luminance = color.computeLuminance();
+      if (luminance > 0.2 && luminance < 0.8) {
         return color;
       }
     }

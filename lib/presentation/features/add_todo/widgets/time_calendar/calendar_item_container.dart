@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CalendarItemContainer extends StatelessWidget {
+  final String mainString;
+  final bool isChecked;
+  final bool isToday;
+  final bool isPastDate;
+  final VoidCallback? onTap;
+
   const CalendarItemContainer({
     required this.mainString,
     this.isChecked = false,
@@ -10,49 +16,42 @@ class CalendarItemContainer extends StatelessWidget {
     super.key,
   });
 
-  final String mainString;
-  final bool isChecked;
-  final bool isToday;
-  final bool isPastDate;
-  final VoidCallback? onTap;
+  Color get _backgroundColor {
+    if (isChecked) return Colors.black;
+    return Colors.transparent;
+  }
+
+  Color get _textColor {
+    if (isChecked) return Colors.white;
+    if (isToday) return Colors.blue;
+    if (isPastDate) return Colors.grey.shade400;
+    return Colors.black;
+  }
+
+  FontWeight get _fontWeight {
+    if (isChecked || isToday) return FontWeight.bold;
+    return FontWeight.normal;
+  }
+
+  Border? get _border {
+    if (isToday && !isChecked) {
+      return const Border.fromBorderSide(BorderSide(color: Colors.blue, width: 2));
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    var backgroundColor = Colors.transparent;
-    var textColor = Colors.black;
-    var fontWeight = FontWeight.normal;
-    Border? border;
-
-    if (isChecked) {
-      backgroundColor = Colors.black;
-      textColor = Colors.white;
-      fontWeight = FontWeight.bold;
-    } else if (isToday) {
-      border = Border.all(color: Colors.blue, width: 2);
-      textColor = Colors.blue;
-      fontWeight = FontWeight.bold;
-    } else if (isPastDate) {
-      textColor = Colors.grey.shade400;
-    }
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
         height: 24,
         width: 24,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          shape: BoxShape.circle,
-          border: border,
-        ),
+        decoration: BoxDecoration(color: _backgroundColor, shape: BoxShape.circle, border: _border),
         alignment: Alignment.center,
         child: Text(
           mainString,
-          style: TextStyle(
-            color: textColor,
-            fontWeight: fontWeight,
-            fontSize: 12,
-          ),
+          style: TextStyle(color: _textColor, fontWeight: _fontWeight, fontSize: 12),
         ),
       ),
     );

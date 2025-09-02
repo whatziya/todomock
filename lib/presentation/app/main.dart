@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:todomock/common/di/service_locator.dart';
 import 'package:todomock/presentation/features/home/home_screen.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await initDependencies();
+  initDependencies();
   runApp(const MyApp());
 }
 
@@ -13,9 +13,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-        title: 'Flutter Demo',
-        home: HomeScreen()
-    );
+    return const MaterialApp(title: 'Flutter Demo', home: HomeScreen());
   }
 }

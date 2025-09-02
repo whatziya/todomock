@@ -1,4 +1,4 @@
-class CalendarInfoUtils {
+abstract final class CalendarInfoUtils {
   static List<int> calendarInfo(int year, int month) {
     final firstWeekday = DateTime(year, month).weekday;
 
@@ -8,7 +8,7 @@ class CalendarInfoUtils {
 
     return List<int>.generate(
       prefixZeros + daysInMonth,
-          (i) => i < prefixZeros ? 0 : (i - prefixZeros + 1),
+      (i) => i < prefixZeros ? 0 : (i - prefixZeros + 1),
     );
   }
 }
